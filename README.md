@@ -1,24 +1,13 @@
-# vue-board
+테이블 filtering
 
-## Project setup
-```
-npm install
-```
+테이블 페이지네이션
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+검색창, 검색시 하단에 기존사용자 리스트 (debounce 사용)
 
-### Compiles and minifies for production
-```
-npm run build
-```
+기존사용시 없을시 새로운 사용자 추가
 
-### Lints and fixes files
-```
-npm run lint
-```
+데이터 존재할 경우
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+데이터 리스트 화면 구현 및 데이터 추가
+새로운 데이터
+새로운 데이터 추가
