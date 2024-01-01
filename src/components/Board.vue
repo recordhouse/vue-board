@@ -155,7 +155,7 @@
               <div class="advice-title">
                 <div class="textarea-title">상담 내용</div>
                 <div class="date">
-                  <span class="date-title">오늘 날짜 : </span>
+                  <span class="date-title">날짜 : </span>
                   <span class="date-value">{{ this.todayStr }}</span>
                 </div>
               </div>
