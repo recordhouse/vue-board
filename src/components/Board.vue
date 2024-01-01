@@ -82,18 +82,22 @@
             <h2 class="table-title">상담내역</h2>
           </div>
           <table class="table">
-            <tr>
-              <td>날짜</td>
-              <td>고객 행동</td>
-            </tr>
-            <tr>
-              <td>-</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>-</td>
-              <td>-</td>
-            </tr>
+            <colgroup>
+              <col width="20%">
+              <col width="*">
+            </colgroup>
+            <thead>
+              <tr>
+                <td>날짜</td>
+                <td>고객 행동</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in adviceData" v-bind:key="item">
+                  <td>{{ item.date }}</td>
+                  <td>{{ item.adviceInfo }}</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -101,52 +105,63 @@
       <div class="content-box right">
         <div class="tab-wrap">
           <div class="tab-btn">
-            <button type="button" class="on">서비스 내역</button>
-            <button type="button">상담내역</button>
+            <button type="button" value="0" @click="tabBtnClick" :class="tabIdx === 0 ? 'on' : ''">서비스 내역</button>
+            <button type="button" value="1" @click="tabBtnClick" :class="tabIdx === 1 ? 'on' : ''">상담 내역</button>
           </div>
           <div class="tab-content">
 
-            <div class="input-text">
-              <label for="input-text01">아파트 이름</label>
-              <input type="text" id="input-text01" v-model="serviceInputData.aptName" />
-            </div>
-            <div class="input-text">
-              <label for="input-text02">날짜</label>
-              <input type="text" id="input-text02" v-model="serviceInputData.date" />
+            <!-- 서비스 내역 -->
+            <div :class="tabIdx === 0 ? 'tab-box on' : 'tab-box'">
+              <div class="input-text">
+                <label for="input-text01">아파트 이름</label>
+                <input type="text" id="input-text01" v-model="serviceInputData.aptName" />
+              </div>
+              <div class="input-text">
+                <label for="input-text02">날짜</label>
+                <input type="text" id="input-text02" v-model="serviceInputData.date" />
+              </div>
+
+              <div class="input-text">
+                <label for="input-text03">주소</label>
+                <input type="text" id="input-text03" v-model="serviceInputData.address" />
+              </div>
+
+              <div class="input-text">
+                <label for="input-text04">주택점검</label>
+                <input type="text" id="input-text04" v-model="serviceInputData.check" />
+              </div>
+
+              <div class="input-text">
+                <label for="input-text05">결제필요</label>
+                <input type="text" id="input-text05" v-model="serviceInputData.payment" />
+              </div>
+              <div class="input-text">
+                <label for="input-text06">결제인증</label>
+                <input type="text" id="input-text06" v-model="serviceInputData.certification" />
+              </div>
+              <div class="input-text">
+                <label for="input-text07">예약확정</label>
+                <input type="text" id="input-text07" v-model="serviceInputData.reserve" />
+              </div>
+
+              <div class="input-text">
+                <label for="input-text08">특이사항</label>
+                <input type="text" id="input-text08" v-model="serviceInputData.info" />
+              </div>
             </div>
 
-            <div class="input-text">
-              <label for="input-text03">주소</label>
-              <input type="text" id="input-text03" v-model="serviceInputData.address" />
+            <!-- 상담 내역 -->
+            <div :class="tabIdx === 1 ? 'tab-box on' : 'tab-box'">
+              <div class="advice-title">
+                <div class="textarea-title">상담 내용</div>
+                <div class="date">
+                  <span class="date-title">오늘 날짜 : </span>
+                  <span class="date-value">{{ this.todayStr }}</span>
+                </div>
+              </div>
+              <textarea class="textarea" v-model="adviceTextAreaData"></textarea>
             </div>
-
-            <div class="input-text">
-              <label for="input-text04">주택점검</label>
-              <input type="text" id="input-text04" v-model="serviceInputData.check" />
-            </div>
-
-            <div class="input-text">
-              <label for="input-text05">결제필요</label>
-              <input type="text" id="input-text05" v-model="serviceInputData.payment" />
-            </div>
-            <div class="input-text">
-              <label for="input-text06">결제인증</label>
-              <input type="text" id="input-text06" v-model="serviceInputData.certification" />
-            </div>
-            <div class="input-text">
-              <label for="input-text07">예약확정</label>
-              <input type="text" id="input-text07" v-model="serviceInputData.reserve" />
-            </div>
-
-            <div class="input-text">
-              <label for="input-text08">특이사항</label>
-              <input type="text" id="input-text08" v-model="serviceInputData.info" />
-            </div>
-
-            <!-- <textarea class="textarea"></textarea> -->
-
-            <button type="button" class="tab-content-btn" @click="tabContentBtnClick">등록</button>
-
+            <button type="button" class="tab-content-btn" @click="tabSendBtnClick">등록</button>
           </div>
         </div>
       </div>
@@ -185,9 +200,9 @@ export default {
         }
       ],
       serviceData:
-      [
+        [
 
-      ],
+        ],
       serviceInputData:
       {
         aptName: '',
@@ -198,26 +213,74 @@ export default {
         certification: '',
         reserve: '',
         info: '',
-      }
+      },
+
+      adviceData: [
+
+      ],
+      adviceTextAreaData: '',
+      todayStr: '',
+      tabIdx: 0
     }
   },
   methods: {
     // 우측 등록 버튼 클릭
-    tabContentBtnClick() {
+    tabSendBtnClick() {
+
+      // 서비스 내역
+      if (this.tabIdx === 0) {
+
+        // 서비스 내역 리스트 추가
+        this.serviceData.push({ ...this.serviceInputData });
+
+        // 등록 폼 초기화
+        for (let key in this.serviceInputData) {
+          this.serviceInputData[key] = '';
+        }
+
+      // 상담 내역
+      } else {
+        
+        // 상담 내역 리스트 추가
+        this.adviceData.push({ ...{ date: this.todayStr, adviceInfo: this.adviceTextAreaData }});
+        console.log(this.adviceData);
+
+        // 등록 폼 초기화
+        this.adviceTextAreaData = '';
+      }
+
+    },
+    tabBtnClick(e) {
+
+      if (e.target.value === '0') {
+        this.tabIdx = 0;
 
 
-      this.serviceData.push({...this.serviceInputData});
 
-      console.log(this.serviceData);
+        console.log(e);
 
+
+      } else {
+        this.tabIdx = 1;
+      }
     }
   },
   mounted() {
-    console.log(this.userData)
+    // console.log(this.userData);
+    this.todayStr = getToday();
   },
   props: {
     msg: String
   }
+}
+
+// 오늘 날짜 구하기
+function getToday() {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = ("0" + (1 + date.getMonth())).slice(-2);
+    var day = ("0" + date.getDate()).slice(-2);
+    return year + "-" + month + "-" + day;
 }
 </script>
 
@@ -316,9 +379,14 @@ export default {
 .tab-wrap .tab-btn>button {
   width: 50%;
   height: 35px;
-  border: 1px solid #999;
+  border: 1px solid #ccc;
+  border-bottom: none;
   background-color: #f0f0f0;
   cursor: pointer;
+}
+
+.tab-wrap .tab-btn>button:first-child {
+  border-right: none;
 }
 
 .tab-wrap .tab-btn>button:hover {
@@ -326,20 +394,42 @@ export default {
 }
 
 .tab-wrap .tab-btn>button.on {
-  background: #ccc;
+  background: #fff;
 }
 
 .tab-wrap .tab-content {
-  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-top: none;
+  padding: 20px 10px;
+}
+.tab-wrap .tab-content .tab-box {
+  display: none;
+}
+
+.tab-wrap .tab-content .tab-box.on {
+  display: block;
+}
+
+.tab-wrap .tab-content .advice-title {
+  position: relative;
+}
+
+.tab-wrap .tab-content .advice-title .date {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .tab-wrap .tab-content .textarea {
-  padding: 0;
+  margin-top: 10px;
+  padding: 5px;
   box-sizing: border-box;
   width: 100%;
   height: 200px;
   resize: none;
 }
+
+
 
 .tab-wrap .tab-content .tab-content-btn {
   margin-top: 20px;
